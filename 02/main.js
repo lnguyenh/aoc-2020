@@ -14,7 +14,7 @@ const neatParse = async (fileName) => {
 };
 
 const parseRule = (ruleString) => {
-  const format = /(\d+)\-(\d+) (.)/;
+  const format = /(\d+)-(\d+) (.)/;
   return format.exec(ruleString);
 };
 
@@ -41,10 +41,10 @@ const checkRule1 = (data) => {
 };
 
 const isValid2 = (index1, index2, letter, testString) => {
-  ok1 = testString.charAt(index1) === letter;
-  ok2 = testString.charAt(index2) === letter;
+  const ok1 = testString.charAt(index1) === letter;
+  const ok2 = testString.charAt(index2) === letter;
   if (ok1 && ok2) {
-    console.log('double', testString, index1, index2, letter);
+    // console.log('double', testString, index1, index2, letter);
   }
   return (ok1 && !ok2) || (!ok1 && ok2);
 };
