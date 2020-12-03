@@ -37,7 +37,7 @@ const checkRule1 = (data) => {
       console.log(row);
     }
   });
-  console.log(`Num valid rule 1${numValid}`);
+  console.log(`Num valid rule 1: ${numValid}`);
 };
 
 const isValid2 = (index1, index2, letter, testString) => {
@@ -72,6 +72,6 @@ const checkRule2 = (data) => {
 };
 
 neatParse('data.csv').then((data) => {
-  // checkRule1(data)
+  // checkRule1(data);
   checkRule2(data);
 });
