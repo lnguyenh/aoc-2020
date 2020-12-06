@@ -11,7 +11,7 @@ const getNumUniqueAnswers = (groupAnswers) => {
   return new Set(Array.from(groupAnswers)).size;
 };
 
-const getSharedAnswers = (groupAnswers) => {
+const getNumSharedAnswers = (groupAnswers) => {
   const individualAnswers = groupAnswers.split(' ').map((x) => Array.from(x));
   const sharedAnswers = individualAnswers.reduce((a, b) => {
     return a.filter((x) => b.includes(x));
@@ -22,7 +22,7 @@ const getSharedAnswers = (groupAnswers) => {
 const sum = (a, b) => a + b;
 
 const part1Answer = rowsPart1.map(getNumUniqueAnswers).reduce(sum, 0);
-const part2Answer = rowsPart2.map(getSharedAnswers).reduce(sum, 0);
+const part2Answer = rowsPart2.map(getNumSharedAnswers).reduce(sum, 0);
 
 console.log(part1Answer);
 console.log(part2Answer);
