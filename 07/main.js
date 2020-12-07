@@ -1,18 +1,5 @@
 const fs = require('fs');
 
-class Rule {
-  constructor(ruleArray) {
-    this.color = ruleArray[0];
-    this.childrenRules = [];
-    for (let subRule of ruleArray.slice(1)) {
-      this.childrenRules.push({
-        number: Number(subRule.charAt(0)),
-        color: subRule.slice(2),
-      });
-    }
-  }
-}
-
 class TreeNode {
   constructor(color, parent) {
     this.color = color;
@@ -22,12 +9,7 @@ class TreeNode {
 
   createChildren(rules, onlySingles = false) {
     const childrenRules = rules[this.color].childrenRules;
-    const parentColors = this.listParentColors();
     childrenRules.forEach(({ number, color }) => {
-      if (parentColors.includes(color)) {
-        console.log('avoid infinite loop ' + this.color);
-        return;
-      }
       // Creating all parents for part 1 is too heavy :/
       const maxChildrenPerColor = onlySingles ? 1 : number;
       for (let i = 0; i < maxChildrenPerColor; i++) {
@@ -38,9 +20,9 @@ class TreeNode {
     });
   }
 
-  isGold = () => {
+  isGold() {
     return this.color === 'shiny gold';
-  };
+  }
 
   listParentColors() {
     if (!this.parent || !this.parent.color) return [];
@@ -54,6 +36,19 @@ class TreeNode {
         .map((child) => child.countChildren())
         .reduce((a, b) => a + b, 0)
     );
+  }
+}
+
+class Rule {
+  constructor(ruleArray) {
+    this.color = ruleArray[0];
+    this.childrenRules = [];
+    for (let subRule of ruleArray.slice(1)) {
+      this.childrenRules.push({
+        number: Number(subRule.charAt(0)),
+        color: subRule.slice(2),
+      });
+    }
   }
 }
 
@@ -89,12 +84,12 @@ const getRules = (fileName) => {
   return rules;
 };
 
-const traverse = (treeNode, results) => {
+const traverseForGold = (treeNode, results) => {
   if (treeNode.isGold()) {
     results.push(treeNode.listParentColors());
   }
   treeNode.children.forEach((child) => {
-    traverse(child, results);
+    traverseForGold(child, results);
   });
 };
 
@@ -103,7 +98,7 @@ const rules = getRules('data.csv');
 // part 1
 const root1 = buildTree1(rules);
 let results = [];
-traverse(root1, results);
+traverseForGold(root1, results);
 console.log(new Set(results.flat()).size);
 
 // part 2
