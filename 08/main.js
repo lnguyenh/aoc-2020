@@ -76,4 +76,4 @@ const instructions = getInstructions('data.csv');
 console.log(run(instructions)[0]);
 
 // part 2
-console.log(fixer(instructions, 0));
+console.log(fixer(instructions));
