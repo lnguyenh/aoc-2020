@@ -54,7 +54,7 @@ const run = (instructions) => {
 
 const fixer = (instructions) => {
   let i = 0;
-  let wasPermuted, acc, last_run_index;
+  let wasPermuted, acc, lastRunIndex;
   while (i < instructions.length) {
     wasPermuted = instructions[i].permute();
     if (wasPermuted) {
