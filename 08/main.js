@@ -58,8 +58,8 @@ const fixer = (instructions) => {
   while (i < instructions.length) {
     wasPermuted = instructions[i].permute();
     if (wasPermuted) {
-      [acc, last_run_index] = run(instructions);
-      if (last_run_index >= instructions.length) {
+      [acc, lastRunIndex] = run(instructions);
+      if (lastRunIndex >= instructions.length) {
         return acc;
       } else {
         instructions[i].permute();
