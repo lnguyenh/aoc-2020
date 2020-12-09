@@ -32,8 +32,30 @@ const findFirstInvalid = (input, seedLength) => {
   return null;
 };
 
+const findContiguous = (target, input) => {
+  let sum = 0;
+  let i = 0;
+  if (input.length === 0) return null;
+  while (sum < target) {
+    sum += input[i];
+    i += 1;
+    if (sum === target) {
+      return input.slice(0, i);
+    }
+  }
+  input.shift();
+  return findContiguous(target, input);
+};
+
 const SEED_LENGTH = 25;
 const INPUT_FILE = 'data.csv';
 
 const input = getInput(INPUT_FILE);
-console.log(findFirstInvalid(input, SEED_LENGTH));
+const firstInvalid = findFirstInvalid(input, SEED_LENGTH);
+
+// part 1
+console.log(firstInvalid);
+
+// part 2
+const contiguous = findContiguous(firstInvalid, input);
+console.log(Math.max(...contiguous) + Math.min(...contiguous));
