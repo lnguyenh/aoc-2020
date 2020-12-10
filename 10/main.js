@@ -10,24 +10,17 @@ const getSortedJoltages = (fileName) => {
 
 const traversePart1 = (joltages) => {
   let i = 0;
+  const results = { 1: 0, 2: 0, 3: 0 };
   let diff = joltages[i] - 0;
-  const results = {
-    1: 0,
-    2: 0,
-    3: 0,
-  };
-
-  // Bag
   while (i < joltages.length && diff < 4) {
     results[diff] += 1;
     results['max'] = joltages[i];
     i++;
     diff = joltages[i] - joltages[i - 1];
   }
-  // Own adapter
+  // Add own adapter
   results[3] += 1;
   results['max'] += 3;
-
   return results;
 };
 
@@ -38,7 +31,7 @@ class Joltage {
     this.numPathsToTarget = 0;
   }
 
-  getPathsToValue(target) {
+  getPathsToTarget(target) {
     if (this.numPathsToTarget !== 0) {
       // cache the result if found earlier
       return this.numPathsToTarget;
@@ -49,7 +42,7 @@ class Joltage {
     } else {
       let numPaths = 0;
       for (const child of this.children) {
-        numPaths += child.getPathsToValue(target);
+        numPaths += child.getPathsToTarget(target);
       }
       this.numPathsToTarget = numPaths;
       return numPaths;
@@ -63,7 +56,6 @@ const buildTree = (joltages) => {
   for (const joltage of joltages) {
     nodes[joltage] = new Joltage(joltage);
   }
-
   // Populate children
   let i = 0;
   while (i < joltages.length - 1) {
@@ -74,7 +66,6 @@ const buildTree = (joltages) => {
     }
     i++;
   }
-
   return nodes;
 };
 
@@ -90,5 +81,5 @@ joltages.unshift(0);
 const nodes = buildTree(joltages);
 const target = joltages.pop();
 const start = joltages[0];
-const numPaths = nodes[start].getPathsToValue(nodes[target]);
+const numPaths = nodes[start].getPathsToTarget(nodes[target]);
 console.log(numPaths);
