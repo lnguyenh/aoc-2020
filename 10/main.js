@@ -31,10 +31,63 @@ const traversePart1 = (joltages) => {
   return results;
 };
 
-const INPUT_FILE = 'data.csv';
+class Joltage {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+    this.numPathsToTarget = 0;
+  }
 
+  getPathsToValue(target) {
+    if (this.numPathsToTarget !== 0) {
+      return this.numPathsToTarget;
+    }
+    if (this === target) {
+      this.numPathsToTarget = 1;
+      return 1;
+    } else {
+      let numPaths = 0;
+      for (const child of this.children) {
+        numPaths += child.getPathsToValue(target);
+      }
+      this.numPathsToTarget = numPaths;
+      return numPaths;
+    }
+  }
+}
+
+const buildTree = (joltages) => {
+  // Create all nodes
+  const nodes = {};
+  for (const joltage of joltages) {
+    nodes[joltage] = new Joltage(joltage);
+  }
+
+  // Populate children
+  let i = 0;
+  while (i < joltages.length - 1) {
+    let j = 1;
+    while (joltages[i + j] - joltages[i] < 4) {
+      nodes[joltages[i]].children.push(nodes[joltages[i + j]]);
+      j++;
+    }
+    i++;
+  }
+
+  return nodes;
+};
+
+const INPUT_FILE = 'data.csv';
 const joltages = getSortedJoltages(INPUT_FILE);
 
 // part 1
-const resultsPart = traversePart1(joltages);
-console.log(resultsPart[1] * resultsPart[3]);
+const resultsPart1 = traversePart1(joltages);
+console.log(resultsPart1[1] * resultsPart1[3]);
+
+// part 2
+joltages.unshift(0);
+const nodes = buildTree(joltages);
+const target = joltages.slice(-1)[0];
+const start = joltages[0];
+const numPaths = nodes[start].getPathsToValue(nodes[target]);
+console.log(numPaths);
