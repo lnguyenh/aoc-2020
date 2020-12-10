@@ -40,6 +40,7 @@ class Joltage {
 
   getPathsToValue(target) {
     if (this.numPathsToTarget !== 0) {
+      // cache the result if found earlier
       return this.numPathsToTarget;
     }
     if (this === target) {
@@ -87,7 +88,7 @@ console.log(resultsPart1[1] * resultsPart1[3]);
 // part 2
 joltages.unshift(0);
 const nodes = buildTree(joltages);
-const target = joltages.slice(-1)[0];
+const target = joltages.pop();
 const start = joltages[0];
 const numPaths = nodes[start].getPathsToValue(nodes[target]);
 console.log(numPaths);
