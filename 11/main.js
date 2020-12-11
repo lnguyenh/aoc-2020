@@ -103,7 +103,7 @@ class Seating {
     return this.getSeat(row, col);
   }
 
-  getNextpart(mode) {
+  getNextPart(mode) {
     const newMap = [];
     for (let rowIndex = 0; rowIndex <= this.maxRowIndex; rowIndex++) {
       const newRow = [];
@@ -158,10 +158,10 @@ const getInitialSeating = (fileName) => {
 };
 
 const findNumOccupiedAtEquilibrium = (initialSeating, mode) => {
-  let seating = initialSeating.getNextpart(mode);
+  let seating = initialSeating.getNextPart(mode);
   let newSeating;
   while (true) {
-    newSeating = seating.getNextpart(mode);
+    newSeating = seating.getNextPart(mode);
     if (newSeating.equals(seating)) break;
     seating = newSeating;
   }
