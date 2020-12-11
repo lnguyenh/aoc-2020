@@ -103,16 +103,16 @@ class Seating {
     return this.getSeat(row, col);
   }
 
-  getNextStep(mode) {
+  getNextpart(mode) {
     const newMap = [];
     for (let rowIndex = 0; rowIndex <= this.maxRowIndex; rowIndex++) {
       const newRow = [];
       for (let colIndex = 0; colIndex <= this.maxColIndex; colIndex++) {
         switch (mode) {
-          case 'step1':
+          case 'part1':
             newRow.push(this.getSeatTransformation(rowIndex, colIndex));
             break;
-          case 'step2':
+          case 'part2':
             newRow.push(this.getSeatTransformation2(rowIndex, colIndex));
             break;
           default:
@@ -158,10 +158,10 @@ const getInitialSeating = (fileName) => {
 };
 
 const findNumOccupiedAtEquilibrium = (initialSeating, mode) => {
-  let seating = initialSeating.getNextStep(mode);
+  let seating = initialSeating.getNextpart(mode);
   let newSeating;
   while (true) {
-    newSeating = seating.getNextStep(mode);
+    newSeating = seating.getNextpart(mode);
     if (newSeating.equals(seating)) break;
     seating = newSeating;
   }
@@ -170,5 +170,5 @@ const findNumOccupiedAtEquilibrium = (initialSeating, mode) => {
 
 const INPUT_FILE = 'data.csv';
 const initialSeating = getInitialSeating(INPUT_FILE);
-console.log('part 1: ' + findNumOccupiedAtEquilibrium(initialSeating, 'step1'));
-console.log('part 2: ' + findNumOccupiedAtEquilibrium(initialSeating, 'step2'));
+console.log('part 1: ' + findNumOccupiedAtEquilibrium(initialSeating, 'part1'));
+console.log('part 2: ' + findNumOccupiedAtEquilibrium(initialSeating, 'part2'));
