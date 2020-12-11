@@ -45,6 +45,48 @@ class Seating {
     return numOccupied;
   }
 
+  getNumOccupiedInLine(row, col, deltaRow, deltaCol) {
+    const getNextRow = (row) => {
+      const nextRow = row + deltaRow;
+      if (nextRow > this.maxRowIndex || nextRow < 0) return null;
+      return nextRow;
+    };
+    const getNextCol = (col) => {
+      const nextCol = col + deltaCol;
+      if (nextCol > this.maxColIndex || nextCol < 0) return null;
+      return nextCol;
+    };
+
+    let seatRow = getNextRow(row);
+    let seatCol = getNextCol(col);
+
+    while (seatRow !== null && seatCol !== null) {
+      if (this.isOccupied(seatRow, seatCol)) return true;
+      if (this.isEmpty(seatRow, seatCol)) return false;
+      seatRow = getNextRow(seatRow);
+      seatCol = getNextCol(seatCol);
+    }
+    return false;
+  }
+
+  getAllNumOccupiedInLine(row, col) {
+    const lines = [
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+      [1, 0],
+      [-1, 0],
+    ];
+    let numOccupied = 0;
+    for (const line of lines) {
+      numOccupied += this.getNumOccupiedInLine(row, col, ...line);
+    }
+    return numOccupied;
+  }
+
   getSeatTransformation(row, col) {
     if (this.isFloor(row, col)) return '.';
     const numOccupiedAdjacentSeats = this.getNumOccupiedAdjacentSeats(row, col);
@@ -53,12 +95,30 @@ class Seating {
     return this.getSeat(row, col);
   }
 
-  getNextStep() {
+  getSeatTransformation2(row, col) {
+    if (this.isFloor(row, col)) return '.';
+    const numOccupiedAdjacentSeats = this.getAllNumOccupiedInLine(row, col);
+    if (this.isEmpty(row, col) && numOccupiedAdjacentSeats === 0) return '#';
+    if (this.isOccupied(row, col) && numOccupiedAdjacentSeats >= 5) return 'L';
+    return this.getSeat(row, col);
+  }
+
+  getNextStep(mode) {
     const newMap = [];
     for (let rowIndex = 0; rowIndex <= this.maxRowIndex; rowIndex++) {
       const newRow = [];
       for (let colIndex = 0; colIndex <= this.maxColIndex; colIndex++) {
-        newRow.push(this.getSeatTransformation(rowIndex, colIndex));
+        switch (mode) {
+          case 'step1':
+            newRow.push(this.getSeatTransformation(rowIndex, colIndex));
+            break;
+          case 'step2':
+            newRow.push(this.getSeatTransformation2(rowIndex, colIndex));
+            break;
+          default:
+            console.log('booo');
+            break;
+        }
       }
       newMap.push(newRow);
     }
@@ -97,17 +157,18 @@ const getInitialSeating = (fileName) => {
   return new Seating(inputAsArray);
 };
 
+const findNumOccupiedAtEquilibrium = (initialSeating, mode) => {
+  let seating = initialSeating.getNextStep(mode);
+  let newSeating;
+  while (true) {
+    newSeating = seating.getNextStep(mode);
+    if (newSeating.equals(seating)) break;
+    seating = newSeating;
+  }
+  return seating.getNumOccupied();
+};
+
 const INPUT_FILE = 'data.csv';
 const initialSeating = getInitialSeating(INPUT_FILE);
-
-// part 1
-let seating = initialSeating.getNextStep();
-let newSeating;
-while (true) {
-  newSeating = seating.getNextStep();
-  // console.log(seating.getNumOccupied() + ' vs ' + newSeating.getNumOccupied());
-  if (newSeating.equals(seating)) break;
-  seating = newSeating;
-}
-
-console.log(newSeating.getNumOccupied());
+console.log('part 1: ' + findNumOccupiedAtEquilibrium(initialSeating, 'step1'));
+console.log('part 2: ' + findNumOccupiedAtEquilibrium(initialSeating, 'step2'));
