@@ -27,32 +27,26 @@ class BaseFerry {
   }
 }
 
-class Ferry extends BaseFerry {
+class Ferry1 extends BaseFerry {
   constructor() {
     super();
     this.rotation = 0; // East facing in the ROTATION array
   }
 
   apply(instruction) {
-    let __, letter, value;
-    [__, letter, value] = /^(.)(\d*)$/.exec(instruction);
-    value = Number(value);
-    switch (letter) {
+    switch (instruction.letter) {
       case 'L':
       case 'R':
-        this.rotate(letter, value);
+        this.rotate(instruction.letter, instruction.value);
         break;
       case 'E':
       case 'S':
       case 'W':
       case 'N':
-        this.moveAbsolute(letter, value);
+        this.moveAbsolute(instruction.letter, instruction.value);
         break;
       case 'F':
-        this.move(value);
-        break;
-      default:
-        console.log('not handled');
+        this.move(instruction.value);
         break;
     }
   }
@@ -81,12 +75,12 @@ class Ferry extends BaseFerry {
   }
 
   rotate(letter, degrees) {
-    if (letter == 'L') degrees = 360 - degrees;
+    if (letter === 'L') degrees = 360 - degrees;
     this.rotation = (this.rotation + degrees / 90) % 4;
   }
 }
 
-class FerryPart2 extends BaseFerry {
+class Ferry2 extends BaseFerry {
   constructor() {
     super();
     this.waypoint = {
@@ -113,7 +107,7 @@ class FerryPart2 extends BaseFerry {
   }
 
   rotateWaypoint(letter, degrees) {
-    if (letter == 'L') degrees = 360 - degrees;
+    if (letter === 'L') degrees = 360 - degrees;
     const times = (degrees / 90) % 4;
     for (let i = 0; i < times; i++) {
       this.waypoint = {
@@ -129,25 +123,19 @@ class FerryPart2 extends BaseFerry {
   }
 
   apply(instruction) {
-    let __, letter, value;
-    [__, letter, value] = /^(.)(\d*)$/.exec(instruction);
-    value = Number(value);
-    switch (letter) {
+    switch (instruction.letter) {
       case 'L':
       case 'R':
-        this.rotateWaypoint(letter, value);
+        this.rotateWaypoint(instruction.letter, instruction.value);
         break;
       case 'E':
       case 'S':
       case 'W':
       case 'N':
-        this.moveWaypoint(letter, value);
+        this.moveWaypoint(instruction.letter, instruction.value);
         break;
       case 'F':
-        this.move(value);
-        break;
-      default:
-        console.log('not handled');
+        this.move(instruction.value);
         break;
     }
   }
@@ -156,16 +144,20 @@ class FerryPart2 extends BaseFerry {
 const getInput = (fileName) => {
   let fileContent = fs.readFileSync(fileName, 'utf8');
   const inputAsText = fileContent.split('\n');
-  return inputAsText;
+
+  return inputAsText.map((text) => {
+    const match = /^(.)(\d*)$/.exec(text);
+    return { letter: match[1], value: Number(match[2]) };
+  });
 };
 
 const INPUT_FILE = 'data.csv';
 const instructions = getInput(INPUT_FILE);
 
-const ferry = new Ferry();
-ferry.applyAll(instructions);
-console.log(ferry.getManhattan());
+const ferry1 = new Ferry1();
+ferry1.applyAll(instructions);
+console.log(ferry1.getManhattan());
 
-const ferry2 = new FerryPart2();
+const ferry2 = new Ferry2();
 ferry2.applyAll(instructions);
 console.log(ferry2.getManhattan());
