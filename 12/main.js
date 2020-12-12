@@ -22,6 +22,24 @@ class BaseFerry {
     return this.getManhattan();
   }
 
+  apply(instruction) {
+    switch (instruction.letter) {
+      case 'L':
+      case 'R':
+        this.rotate(instruction.letter, instruction.value);
+        break;
+      case 'E':
+      case 'S':
+      case 'W':
+      case 'N':
+        this.moveESWN(instruction.letter, instruction.value);
+        break;
+      case 'F':
+        this.move(instruction.value);
+        break;
+    }
+  }
+
   getManhattan() {
     return Math.abs(this.position.east) + Math.abs(this.position.north);
   }
@@ -33,31 +51,13 @@ class Ferry1 extends BaseFerry {
     this.rotation = 0; // East facing in the ROTATION array
   }
 
-  apply(instruction) {
-    switch (instruction.letter) {
-      case 'L':
-      case 'R':
-        this.rotate(instruction.letter, instruction.value);
-        break;
-      case 'E':
-      case 'S':
-      case 'W':
-      case 'N':
-        this.moveAbsolute(instruction.letter, instruction.value);
-        break;
-      case 'F':
-        this.move(instruction.value);
-        break;
-    }
-  }
-
   move(distance) {
     const direction = ROTATION[this.rotation];
     this.position.east += direction.east * distance;
     this.position.north += direction.north * distance;
   }
 
-  moveAbsolute(letter, distance) {
+  moveESWN(letter, distance) {
     switch (letter) {
       case 'E':
         this.position.east += distance;
@@ -89,7 +89,12 @@ class Ferry2 extends BaseFerry {
     };
   }
 
-  moveWaypoint(letter, distance) {
+  move(times) {
+    this.position.east += this.waypoint.east * times;
+    this.position.north += this.waypoint.north * times;
+  }
+
+  moveESWN(letter, distance) {
     switch (letter) {
       case 'E':
         this.waypoint.east += distance;
@@ -106,7 +111,7 @@ class Ferry2 extends BaseFerry {
     }
   }
 
-  rotateWaypoint(letter, degrees) {
+  rotate(letter, degrees) {
     if (letter === 'L') degrees = 360 - degrees;
     const times = (degrees / 90) % 4;
     for (let i = 0; i < times; i++) {
@@ -114,29 +119,6 @@ class Ferry2 extends BaseFerry {
         east: this.waypoint.north,
         north: -this.waypoint.east,
       };
-    }
-  }
-
-  move(times) {
-    this.position.east += this.waypoint.east * times;
-    this.position.north += this.waypoint.north * times;
-  }
-
-  apply(instruction) {
-    switch (instruction.letter) {
-      case 'L':
-      case 'R':
-        this.rotateWaypoint(instruction.letter, instruction.value);
-        break;
-      case 'E':
-      case 'S':
-      case 'W':
-      case 'N':
-        this.moveWaypoint(instruction.letter, instruction.value);
-        break;
-      case 'F':
-        this.move(instruction.value);
-        break;
     }
   }
 }
