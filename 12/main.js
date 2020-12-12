@@ -153,11 +153,5 @@ const getInput = (fileName) => {
 
 const INPUT_FILE = 'data.csv';
 const instructions = getInput(INPUT_FILE);
-
-const ferry1 = new Ferry1();
-ferry1.applyAll(instructions);
-console.log(ferry1.getManhattan());
-
-const ferry2 = new Ferry2();
-ferry2.applyAll(instructions);
-console.log(ferry2.getManhattan());
+console.log('part 1: ' + new Ferry1().applyAll(instructions));
+console.log('part 2: ' + new Ferry2().applyAll(instructions));
