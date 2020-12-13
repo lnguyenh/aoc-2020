@@ -1,12 +1,9 @@
 const fs = require('fs');
-const mathjs = require('mathjs');
 
 class Bus {
   constructor(id, index) {
     this.id = id;
-    this.period = id;
     this.index = index;
-    this.delta = index;
   }
 
   getNextDeparture(time) {
@@ -16,15 +13,7 @@ class Bus {
   hasDeparture(time, delta) {
     const targetTime = time - delta + this.index;
     const result = targetTime % this.id === 0;
-    if (result) console.log(time, delta, this.period);
     return result;
-  }
-}
-function* busDeparture(bus) {
-  let index = 0;
-  while (true) {
-    index++;
-    yield bus.id * index;
   }
 }
 
@@ -51,23 +40,32 @@ const getBestNextDeparture = (target, buses) => {
   return { bestDeparture, bus, waitTime, result };
 };
 
-const INPUT_FILE = 'example.csv';
+function* busDeparture() {
+  let index = 0;
+  while (true) {
+    // Manual optimization for part 2 (23 x a = 479 x b - 23)
+    // so we increment by the lowest common multiple of 479 and 23 (11017)
+    // const lcm = mathjs.lcm(479, 23);
+    index += 11017;
+    yield index;
+  }
+}
+
+const INPUT_FILE = 'data.csv';
 const { target, buses } = getInput(INPUT_FILE);
 
 const { result } = getBestNextDeparture(target, buses);
 console.log('part 1: ' + result);
 
 sortedBuses = buses.sort((a, b) => b.id - a.id);
-console.log(sortedBuses);
 const slowestBus = sortedBuses[0];
 const otherBuses = sortedBuses.slice(1);
-const slowestBusDepartures = busDeparture(slowestBus);
 
-// part 2 slow
+// part 2
+const slowestBusDepartures = busDeparture();
 let targetTime;
 while (true) {
   targetTime = slowestBusDepartures.next().value;
-  // console.log(targetTime);
   if (
     otherBuses.every((bus) => {
       return bus.hasDeparture(targetTime, slowestBus.index);
@@ -75,7 +73,5 @@ while (true) {
   )
     break;
 }
-console.log(targetTime - slowestBus.index);
-
-// const lcm = mathjs.lcm(23, 41, 37, 479, 13, 17, 29, 373, 19);
-// console.log(lcm);
+// This can take a while (1 or 2 hours...)
+console.log('part 2: ' + targetTime - slowestBus.index);
