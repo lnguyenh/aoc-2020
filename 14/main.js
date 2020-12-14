@@ -101,6 +101,6 @@ const getInput = (fileName) => {
 };
 
 const INPUT_FILE = 'data.csv';
-const input = getInput(INPUT_FILE);
-console.log('part 1: ' + new Memory1().doAll(input));
-console.log('part 2: ' + new Memory2().doAll(input));
+const instructions = getInput(INPUT_FILE);
+console.log('part 1: ' + new Memory1().doAll(instructions));
+console.log('part 2: ' + new Memory2().doAll(instructions));
