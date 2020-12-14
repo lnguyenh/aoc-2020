@@ -32,9 +32,7 @@ class BaseMemory {
   }
 
   doAll(instructions) {
-    for (const instruction of instructions) {
-      this.do(instruction);
-    }
+    instructions.map((instruction) => this.do(instruction));
     return this.sum();
   }
 }
@@ -49,6 +47,29 @@ class Memory1 extends BaseMemory {
     }
     this.values[address] = parseInt(binaryArray.join(''), 2);
     return this.values[address];
+  }
+}
+
+class Memory2 extends BaseMemory {
+  mem(address, value) {
+    const floatingArray = (address >>> 0)
+      .toString(2)
+      .padStart(36, '0')
+      .split('');
+    for (const [i, __] of floatingArray.entries()) {
+      switch (this.mask[i]) {
+        case '1':
+          floatingArray[i] = '1';
+          break;
+        case 'X':
+          floatingArray[i] = 'X';
+          break;
+      }
+    }
+
+    for (const floatingAddress of floatingMasks(floatingArray)) {
+      this.values[floatingAddress] = value;
+    }
   }
 }
 
@@ -71,33 +92,6 @@ function floatingMasks(array) {
       floatingMasks(array.slice(0, 1)),
       floatingMasks(array.slice(1))
     );
-  }
-}
-
-class Memory2 extends BaseMemory {
-  getFloatingAddresses(floatingArray) {
-    return floatingMasks(floatingArray);
-  }
-
-  mem(address, value) {
-    const floatingArray = (address >>> 0)
-      .toString(2)
-      .padStart(36, '0')
-      .split('');
-    for (const [i, __] of floatingArray.entries()) {
-      switch (this.mask[i]) {
-        case '1':
-          floatingArray[i] = '1';
-          break;
-        case 'X':
-          floatingArray[i] = 'X';
-          break;
-      }
-    }
-
-    for (const floatingAddress of this.getFloatingAddresses(floatingArray)) {
-      this.values[floatingAddress] = value;
-    }
   }
 }
 
