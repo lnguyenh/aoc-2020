@@ -26,8 +26,9 @@ class BaseMemory {
         this.setMask(suffix);
         break;
       default:
-        const match = /^mem\[(\d*)\]$/.exec(prefix);
+        const match = /^mem\[(\d*)]$/.exec(prefix);
         this.mem(Number(match[1]), Number(suffix));
+        break;
     }
   }
 
