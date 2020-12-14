@@ -67,31 +67,31 @@ class Memory2 extends BaseMemory {
       }
     }
 
-    for (const floatingAddress of floatingMasks(floatingArray)) {
+    for (const floatingAddress of this.combinations(floatingArray)) {
       this.values[floatingAddress] = value;
     }
   }
-}
 
-function combination(array1, array2) {
-  return array1.flatMap((a) => array2.map((b) => a.concat(b)));
-}
-
-function floatingMasks(array) {
-  if (array.length === 1) {
-    switch (array[0]) {
-      case '0':
-        return [[0]];
-      case '1':
-        return [[1]];
-      case 'X':
-        return [[0], [1]];
+  combinations(array) {
+    function combination(array1, array2) {
+      return array1.flatMap((a) => array2.map((b) => a.concat(b)));
     }
-  } else {
-    return combination(
-      floatingMasks(array.slice(0, 1)),
-      floatingMasks(array.slice(1))
-    );
+
+    if (array.length === 1) {
+      switch (array[0]) {
+        case '0':
+          return [[0]];
+        case '1':
+          return [[1]];
+        case 'X':
+          return [[0], [1]];
+      }
+    } else {
+      return combination(
+        this.combinations(array.slice(0, 1)),
+        this.combinations(array.slice(1))
+      );
+    }
   }
 }
 
@@ -102,9 +102,5 @@ const getInput = (fileName) => {
 
 const INPUT_FILE = 'data.csv';
 const input = getInput(INPUT_FILE);
-
-const memory = new Memory1();
-console.log(memory.doAll(input));
-
-const memory2 = new Memory2();
-console.log(memory2.doAll(input));
+console.log('part 1: ' + new Memory1().doAll(input));
+console.log('part 2: ' + new Memory2().doAll(input));
