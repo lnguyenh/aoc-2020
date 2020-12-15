@@ -1,13 +1,11 @@
 class Game {
   constructor(seed) {
     this.turn = 0;
-    this.turns = [];
     this.lastLastSpoken = {};
     this.lastSpoken = {};
     for (const value of seed) {
       this.applyTurn(value);
     }
-    this.mostRecentlySpoken = this.turns.slice(-1)[0];
   }
 
   getAge(value) {
@@ -21,7 +19,6 @@ class Game {
       this.lastLastSpoken[turnValue] = this.lastSpoken[turnValue];
     }
     this.lastSpoken[turnValue] = this.turn;
-    this.turns.push(turnValue);
     this.mostRecentlySpoken = turnValue;
     this.turn++;
   }
@@ -44,7 +41,6 @@ class Game {
   }
 }
 
-// const INPUT_ARRAY = [0, 3, 6];
-const INPUT_ARRAY = [5, 2, 8, 16, 18, 0, 1];
-// console.log(new Game(INPUT_ARRAY).playUntil(2020));
-console.log(new Game(INPUT_ARRAY).playUntil(30000000));
+const SEED = [5, 2, 8, 16, 18, 0, 1];
+console.log('part 1: ' + new Game(SEED).playUntil(2020));
+console.log('part 2: ' + new Game(SEED).playUntil(30000000));
