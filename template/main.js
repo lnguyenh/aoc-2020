@@ -8,3 +8,6 @@ const getInput = (fileName) => {
 
 const INPUT_FILE = 'example.csv';
 const input = getInput(INPUT_FILE);
+
+console.log('part 1: ' + '');
+console.log('part 2: ' + '');
