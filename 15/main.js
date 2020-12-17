@@ -1,24 +1,24 @@
 class Game {
   constructor(seed) {
     this.turn = 0;
-    this.lastLastSpoken = {};
-    this.lastSpoken = {};
+    this.lastLastSpoken = new Map();
+    this.lastSpoken = new Map();
     for (const value of seed) {
       this.applyTurn(value);
     }
   }
 
   getAge(value) {
-    return value in this.lastLastSpoken
-      ? this.lastSpoken[value] - this.lastLastSpoken[value]
+    return this.lastLastSpoken.has(value)
+      ? this.lastSpoken.get(value) - this.lastLastSpoken.get(value)
       : 0;
   }
 
   applyTurn(turnValue) {
-    if (turnValue in this.lastSpoken) {
-      this.lastLastSpoken[turnValue] = this.lastSpoken[turnValue];
+    if (this.lastSpoken.has(turnValue)) {
+      this.lastLastSpoken.set(turnValue, this.lastSpoken.get(turnValue));
     }
-    this.lastSpoken[turnValue] = this.turn;
+    this.lastSpoken.set(turnValue, this.turn);
     this.mostRecentlySpoken = turnValue;
     this.turn++;
   }
