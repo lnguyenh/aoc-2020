@@ -7,7 +7,7 @@ class BaseExpression {
 
     // Probably over-complicated way to deal with parenthesis
     // We add either numbers to operands, or +/* to operators
-    // If we encounter a parenthesis block we calculate its values
+    // If we encounter a parenthesis block we calculate its value
     // by creating a new expression based on the parenthesis content
     for (let i = 0; i < array.length; i++) {
       if (array[i] === '(') {
