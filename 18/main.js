@@ -1,55 +1,53 @@
 const fs = require('fs');
 
-class Single {
-  constructor(text) {
-    this.a = Number(text);
-  }
-  evaluate() {
-    return this.a;
-  }
-}
-
 class Expression {
-  constructor(text) {
-    let __, a, b, operator;
+  constructor(array) {
+    this.operands = [];
+    this.operators = [];
+    this.array = array;
 
-    // (..)
-    let match = /^\(.*\)$/.exec(text);
-    if (match) {
-      text = text.slice(1, text.length - 1);
-    }
-
-    // 2 * 3 ...
-    match = /^(\d*) ([\*+]) (.*)$/.exec(text);
-    if (match) {
-      // (2 * ) + ...
-      [__, a, operator, b] = match;
-    } else {
-      match = /^\((.+?)\) ([\*+]) (.!*)$/.exec(text);
-      if (match) {
-        [__, a, operator, b] = match;
-      } else {
-        match = /^\((.*?)\) ([\*+]) (.*)$/.exec(text);
-        if (match) {
-          [__, a, operator, b] = match;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === '(') {
+        let numSubParenthesis = 0;
+        for (let j = i + 1; j < array.length; j++) {
+          // find matching parenthesis
+          switch (array[j]) {
+            case ')':
+              numSubParenthesis -= 1;
+              break;
+            case '(':
+              numSubParenthesis += 1;
+              break;
+            default:
+              break;
+          }
+          if (numSubParenthesis < 0) {
+            const subArray = array.slice(i + 1, j);
+            this.operands.push(new Expression(subArray).evaluate());
+            i = j;
+            break;
+          }
         }
+      } else if (!isNaN(array[i])) {
+        this.operands.push(Number(array[i]));
+      } else {
+        this.operators.push(array[i]);
       }
     }
-
-    this.operator = operator;
-    this.a = a.includes('(') ? new Expression(a) : new Single(a);
-    this.b = b.includes('(') ? new Expression(b) : new Single(b);
   }
 
   evaluate() {
-    let result;
-    switch (this.operator) {
-      case '+':
-        result = this.a.evaluate() + this.b.evaluate();
-        break;
-      case '*':
-        result = this.a.evaluate() * this.b.evaluate();
-        break;
+    if (this.operands.length === 0) return 0;
+    let result = this.operands[0];
+    for (let i = 0; i < this.operators.length; i++) {
+      switch (this.operators[i]) {
+        case '+':
+          result += this.operands[i + 1];
+          break;
+        case '*':
+          result *= this.operands[i + 1];
+          break;
+      }
     }
     return result;
   }
@@ -57,15 +55,20 @@ class Expression {
 
 const getInput = (fileName) => {
   let fileContent = fs.readFileSync(fileName, 'utf8');
+  fileContent = fileContent.replace(/\(/g, '( ');
+  fileContent = fileContent.replace(/\)/g, ' )');
   const inputAsText = fileContent.split('\n');
   return inputAsText;
 };
 
-const INPUT_FILE = 'example.csv';
+const INPUT_FILE = 'data.csv';
 const input = getInput(INPUT_FILE);
+
+let part1Result = 0;
 for (const line of input) {
-  console.log(new Expression(line).evaluate());
+  const expression = new Expression(line.split(' '));
+  part1Result += expression.evaluate();
 }
 
-console.log('part 1: ' + '');
+console.log('part 1: ' + part1Result);
 console.log('part 2: ' + '');
