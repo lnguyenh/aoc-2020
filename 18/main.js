@@ -93,15 +93,10 @@ const INPUT_FILE = 'data.csv';
 const input = getInput(INPUT_FILE);
 
 let part1Result = 0;
-for (const line of input) {
-  const expression = new Expression1(line.split(' '));
-  part1Result += expression.evaluate();
-}
-console.log('part 1: ' + part1Result);
-
 let part2Result = 0;
 for (const line of input) {
-  const expression = new Expression2(line.split(' '));
-  part2Result += expression.evaluate();
+  part1Result += new Expression1(line.split(' ')).evaluate();
+  part2Result += new Expression2(line.split(' ')).evaluate();
 }
+console.log('part 1: ' + part1Result);
 console.log('part 2: ' + part2Result);
