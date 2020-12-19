@@ -66,6 +66,8 @@ class Validator {
   }
 
   clean(message, ruleId) {
+    // Removes as many occurrences as possible of ruleId
+    // returns the new string without the occurrences and the number of occurrences removed
     const unwanted = this.rules.get(ruleId).needs;
     let lastValidation = false;
     let delta = 0;
