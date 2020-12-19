@@ -51,6 +51,7 @@ class Validator {
         delta = isValid ? j - i : 0;
         if (isValid) {
           const empty = new Array(depth).fill('    ').join('');
+          // Can help to visualize what happens
           // console.log(empty, rule.id, `(${depth})`, ruleSet);
           break;
         }
@@ -96,7 +97,6 @@ class Validator {
         isValid = lastValidation;
         if (isValid) {
           numFound++;
-          // console.log('found ' + ruleSet);
           delta = j - i;
           newMessage = newMessage.slice(delta);
           break;
@@ -132,55 +132,20 @@ for (const message of messages) {
 console.log('part 1: ' + validMessages.size);
 
 // part 2
-// For part 2, any message that starts with any number of 42*X, then ends with
-// any 31 and 42 in succession (ending with 31) is valid.
+// For part 2, any message that starts with a number of 42s, then ends with a number of
+// 31s (but at least one less 31 than there is of 42s)
 let numValid = 0;
 for (const message of messages) {
-  // Any number of 42
   const [newMessage42, numFound42] = validator.clean(message, '42');
-
-  // Not a positive if we only have 42s (we also need at least one 31)
-  if (newMessage42.length === message.length || newMessage42.length === 0)
-    continue;
-
-  // Any number of 31
   const [newMessage31, numFound31] = validator.clean(newMessage42, '31');
 
-  if (numFound31 > 0 && numFound42 > numFound31 && newMessage31.length === 0) {
-    // console.log(message);
+  if (
+    numFound42 > 0 &&
+    numFound31 > 0 &&
+    numFound42 > numFound31 &&
+    newMessage31.length === 0
+  ) {
     numValid++;
   }
-
-  //
-  // // Check for a succession of 42s and 31s ending with a 31
-  // let newMessage2 = newMessage;
-  // let lastIs42 = false;
-  //
-  // while (true) {
-  //   let check1 = validator.clean(newMessage2, '31');
-  //   if (check1.length != newMessage2.length) {
-  //     lastIs42 = false;
-  //     newMessage2 = check1;
-  //     continue;
-  //   }
-  //
-  //   let check2 = validator.clean(newMessage2, '42');
-  //   if (check2.length != newMessage2.length) {
-  //     console.log(message, check2, newMessage2);
-  //     lastIs42 = true;
-  //     newMessage2 = check2;
-  //     continue;
-  //   }
-  //
-  //   // get out if nothing has changed
-  //   break;
-  // }
-  // if (newMessage2.length === 0 && lastIs42 === false) {
-  //   numValid++;
-  //   // console.log(message);
-  // }
-  // if (lastIs42) {
-  //   console.log('ended with 42: ', message);
-  // }
 }
 console.log('part 2: ' + numValid);
