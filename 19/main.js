@@ -50,8 +50,8 @@ class Validator {
         isValid = lastValidation;
         delta = isValid ? j - i : 0;
         if (isValid) {
-          const empty = new Array(depth).fill('    ').join('');
           // Can help to visualize what happens
+          // const empty = new Array(depth).fill('    ').join('');
           // console.log(empty, rule.id, `(${depth})`, ruleSet);
           break;
         }
@@ -67,12 +67,13 @@ class Validator {
 
   clean(message, ruleId) {
     // Removes as many occurrences as possible of ruleId
-    // returns the new string without the occurrences and the number of occurrences removed
+    // returns the new string (without the occurrences) and
+    // the number of occurrences removed
     const unwanted = this.rules.get(ruleId).needs;
     let lastValidation = false;
     let delta = 0;
     let isValid = true;
-    let newMessage = message.slice();
+    let newMessage = message;
     let numFound = 0;
 
     while (isValid) {
@@ -91,7 +92,7 @@ class Validator {
             j += subValidation.delta;
             lastValidation = true;
           } else {
-            // try next rule set
+            // This rule set failed, try the next one
             lastValidation = false;
             break;
           }
