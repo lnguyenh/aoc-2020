@@ -222,7 +222,7 @@ class Image extends BaseMatrix {
             )
           ) {
             numMonsters++;
-            MONSTER_COORDINATES.forEach(
+            MONSTER_COORDINATES.map(
               ([k, l]) => (this.current[i + k][j + l] = '0')
             );
           }
@@ -266,7 +266,7 @@ for (const tile of tiles) {
 console.log('part 1: ' + cornerCandidates.reduce((a, b) => a * b, 1));
 
 // part 2
-// 1) Keep track of corners left to find
+// 1) Keep track of tiles left to place
 const candidates = new Map();
 tiles.map((tile) => candidates.set(tile.id, tile));
 const positions = new Map();
