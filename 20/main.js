@@ -1,10 +1,24 @@
 const fs = require('fs');
 
 const SIZE = 10;
+const MONSTER = [
+  '                  # '.split(''),
+  '#    ##    ##    ###'.split(''),
+  ' #  #  #  #  #  #   '.split(''),
+];
+const MONSTER_WIDTH = MONSTER[0].length;
+const MONSTER_HEIGHT = MONSTER.length;
+const MONSTER_COORDINATES = [];
+for (let k = 0; k < MONSTER_HEIGHT; k++) {
+  for (let l = 0; l < MONSTER_WIDTH; l++) {
+    if (MONSTER[k][l] === '#') MONSTER_COORDINATES.push([k, l]);
+  }
+}
 
 class BaseMatrix {
   constructor() {
     this.current = [[]];
+    this.currentEdges = new Map();
   }
 
   flipV() {
@@ -38,6 +52,43 @@ class BaseMatrix {
       this.current.map((line) => line[this.width - 1]).join('')
     );
   }
+
+  *getNextPosition() {
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    this.flipV();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    this.flipV();
+    this.rotate90();
+    this.flipV();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    this.rotate90();
+    yield true;
+    return;
+  }
+
+  print() {
+    for (const line of this.current) {
+      console.log(line.join(''));
+    }
+  }
 }
 
 class Tile extends BaseMatrix {
@@ -46,7 +97,6 @@ class Tile extends BaseMatrix {
     [this.title, this.raw] = blob.split(':\n');
     this.id = Number(this.title.slice(5, 10));
     this.original = this.extract(this.raw);
-    this.currentEdges = new Map();
     this.width = SIZE;
 
     // part 1
@@ -91,37 +141,6 @@ class Tile extends BaseMatrix {
         return;
       }
     }
-  }
-
-  *getNextPosition() {
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    this.flipV();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    this.flipV();
-    this.rotate90();
-    this.flipV();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    this.rotate90();
-    yield true;
-    return;
   }
 
   matchesTiles(otherTile, where) {
@@ -173,21 +192,54 @@ class Image extends BaseMatrix {
   constructor(positions) {
     super();
     const width = Math.sqrt(positions.size);
-    this.image = new Array(width * (SIZE - 2));
-    for (let i = 0; i < this.image.length; i++) {
-      this.image[i] = new Array(width * (SIZE - 2));
+    this.width = width * (SIZE - 2);
+    this.current = new Array(width * (SIZE - 2));
+    for (let i = 0; i < this.current.length; i++) {
+      this.current[i] = new Array(width * (SIZE - 2));
     }
     for (let i = 0; i < width; i++) {
       for (let j = 0; j < width; j++) {
         const currentTile = positions.get(`${i}-${j}`);
         for (let k = 1; k < SIZE - 1; k++) {
           for (let l = 1; l < SIZE - 1; l++) {
-            this.image[i * (SIZE - 2) + k - 1][j * (SIZE - 2) + l - 1] =
+            this.current[i * (SIZE - 2) + k - 1][j * (SIZE - 2) + l - 1] =
               currentTile.current[k][l];
           }
         }
       }
     }
+  }
+
+  findMonsters() {
+    let numMonsters = 0;
+    const positionIterator = this.getNextPosition();
+    while (numMonsters === 0 && positionIterator.next().value === true) {
+      for (let i = 0; i <= this.width - MONSTER_HEIGHT; i++) {
+        for (let j = 0; j <= this.width - MONSTER_WIDTH; j++) {
+          if (
+            MONSTER_COORDINATES.every(
+              ([k, l]) => this.current[i + k][j + l] === '#'
+            )
+          ) {
+            numMonsters++;
+            MONSTER_COORDINATES.forEach(
+              ([k, l]) => (this.current[i + k][j + l] = '0')
+            );
+          }
+        }
+      }
+    }
+    return numMonsters;
+  }
+
+  countClear() {
+    let num = 0;
+    for (let i = 0; i < this.width; i++) {
+      for (let j = 0; j < this.width; j++) {
+        if (this.current[i][j] === '#') num++;
+      }
+    }
+    return num;
   }
 }
 
@@ -197,8 +249,8 @@ const getInput = (fileName) => {
   return tilesAsText.map((blob) => new Tile(blob));
 };
 
-const INPUT_FILE = 'example.csv';
-//const INPUT_FILE = 'data.csv';
+// const INPUT_FILE = 'example.csv';
+const INPUT_FILE = 'data.csv';
 const tiles = getInput(INPUT_FILE);
 
 // part 1
@@ -249,21 +301,8 @@ for (let i = 0; i < width; i++) {
   }
 }
 
-// Merge
+// Merge and find monsters
 const image = new Image(positions);
-
-console.log('part 2: ' + '');
-
-function arraysMatch(arr1, arr2) {
-  if (arr1.length !== arr2.length) return false;
-  for (let i = 0; arr1.length < i; i++) {
-    if (arr1[i] !== arr2[i]) return false;
-  }
-  return true;
-}
-
-function reverseArray(array) {
-  const newArray = [];
-  for (const val of array) newArray.unshift(val);
-  return newArray;
-}
+const numMonsters = image.findMonsters();
+image.print();
+console.log('part 2: ' + image.countClear());
