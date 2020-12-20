@@ -21,14 +21,14 @@ class BaseMatrix {
     this.currentEdges = new Map();
   }
 
-  flipV() {
+  flipVertically() {
     for (let i = 0; i < this.width; i++) {
       this.current[i].reverse();
     }
     this.refreshEdges();
   }
 
-  rotate90() {
+  rotate90clockwise() {
     const X = this.width / 2;
     const Y = this.width - 1;
     for (let i = 0; i < X; i++) {
@@ -55,31 +55,31 @@ class BaseMatrix {
 
   *getNextPosition() {
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
-    this.flipV();
+    this.rotate90clockwise();
+    this.flipVertically();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
-    this.flipV();
-    this.rotate90();
-    this.flipV();
+    this.rotate90clockwise();
+    this.flipVertically();
+    this.rotate90clockwise();
+    this.flipVertically();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
-    this.rotate90();
+    this.rotate90clockwise();
     yield true;
     return;
   }
@@ -99,11 +99,11 @@ class Tile extends BaseMatrix {
     this.original = this.extract(this.raw);
     this.width = SIZE;
 
-    // part 1
+    // Needed for part 1
     this.simpleEdges = this.getEdges();
     this.matchedEdges = 0;
 
-    // part 2
+    // Needed for part 2
     this.current = this.original.map((line) => [...line]);
     this.refreshEdges();
   }
@@ -136,7 +136,7 @@ class Tile extends BaseMatrix {
 
   orientInitial(tileMap) {
     while (true) {
-      this.rotate90();
+      this.rotate90clockwise();
       if (this.hasRightAndBottomMatch(tileMap)) {
         return;
       }
@@ -249,7 +249,6 @@ const getInput = (fileName) => {
   return tilesAsText.map((blob) => new Tile(blob));
 };
 
-// const INPUT_FILE = 'example.csv';
 const INPUT_FILE = 'data.csv';
 const tiles = getInput(INPUT_FILE);
 
@@ -266,20 +265,18 @@ for (const tile of tiles) {
 }
 console.log('part 1: ' + cornerCandidates.reduce((a, b) => a * b, 1));
 
-// MAKE IMAGE
-
-// Keep track of corners left to find
+// part 2
+// 1) Keep track of corners left to find
 const candidates = new Map();
 tiles.map((tile) => candidates.set(tile.id, tile));
 const positions = new Map();
-
-// starting corner
+// 2) Start from one corner. Orient it so that it is top left
 width = Math.sqrt(candidates.size);
 const startingCorner = candidates.get(cornerCandidates[0]);
 candidates.delete(startingCorner.id);
 startingCorner.orientInitial(candidates);
 positions.set('0-0', startingCorner);
-
+// 3) Orient and find all corners
 for (let i = 0; i < width; i++) {
   for (let j = 0; j < width; j++) {
     if (positions.has(`${i}-${j}`)) {
@@ -300,9 +297,8 @@ for (let i = 0; i < width; i++) {
     }
   }
 }
-
-// Merge and find monsters
+// 4) Merge image and find monsters
 const image = new Image(positions);
 const numMonsters = image.findMonsters();
-image.print();
+// image.print();
 console.log('part 2: ' + image.countClear());
