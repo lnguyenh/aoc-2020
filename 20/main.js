@@ -81,7 +81,7 @@ class BaseMatrix {
     yield true;
     this.rotate90clockwise();
     yield true;
-    return;
+    yield false;
   }
 
   print() {
