@@ -300,5 +300,5 @@ for (let i = 0; i < width; i++) {
 // 4) Merge image and find monsters
 const image = new Image(positions);
 const numMonsters = image.findMonsters();
-// image.print();
+image.print();
 console.log('part 2: ' + image.countClear());
