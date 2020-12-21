@@ -37,7 +37,7 @@ for (const line of foodLines) {
     }
   }
 
-  // Populate a map containing for each ingredient a list of possible allergen
+  // Populate a map containing for each ingredient a list of possible allergens
   // it can contain
   for (const ingredient of foodIngredients) {
     if (ingredientPart2.has(ingredient)) {
