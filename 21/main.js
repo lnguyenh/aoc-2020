@@ -19,10 +19,14 @@ for (const line of foodLines) {
   const foodIngredients = match[1].split(' ');
   const foodAllergens = match[2] ? match[2].split(', ') : [];
 
+  // Populate an array of foods, storing for each food its list of ingredients
   foods.push({ ingredients: foodIngredients });
 
+  // Maintain a set of unique ingredients
   ingredients = new Set([...ingredients, ...foodIngredients]);
 
+  // Populate a map containing for each allergen a list of possible ingredients
+  // that can contain it
   for (const allergen of foodAllergens) {
     if (allergens.has(allergen)) {
       const ingredientIntersection = allergens
@@ -34,6 +38,8 @@ for (const line of foodLines) {
     }
   }
 
+  // Populate a map containing for each ingredient a list of possible allergen
+  // it can contain
   for (const ingredient of foodIngredients) {
     if (ingredientPart2.has(ingredient)) {
       const allergenSet = new Set([
@@ -51,13 +57,13 @@ const cleanIngredients = new Set(ingredients);
 for (const [__, ingredientList] of allergens) {
   ingredientList.forEach((i) => cleanIngredients.delete(i));
 }
-let part1Answer = 0;
+let resultPart1 = 0;
 for (const ingredient of cleanIngredients) {
   for (const food of foods) {
-    if (food.ingredients.includes(ingredient)) part1Answer++;
+    if (food.ingredients.includes(ingredient)) resultPart1++;
   }
 }
-console.log('part 1: ' + part1Answer);
+console.log('part 1: ' + resultPart1);
 
 for (const [allergen, ingredientSet] of allergens) {
   allergens.set(
@@ -65,7 +71,6 @@ for (const [allergen, ingredientSet] of allergens) {
     new Set([...ingredientSet].filter((i) => !cleanIngredients.has(i)))
   );
 }
-
 const cleanedAllergens = [];
 while (allergens.size > 0) {
   for (const [allergen, ingredientSet] of allergens) {
