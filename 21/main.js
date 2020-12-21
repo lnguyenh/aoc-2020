@@ -2,8 +2,7 @@ const fs = require('fs');
 
 const getInput = (fileName) => {
   let fileContent = fs.readFileSync(fileName, 'utf8');
-  const inputAsText = fileContent.split('\n');
-  return inputAsText;
+  return fileContent.split('\n');
 };
 
 const INPUT_FILE = 'data.csv';
@@ -15,14 +14,14 @@ const allergens = new Map();
 const ingredientPart2 = new Map();
 
 for (const line of foodLines) {
-  const match = /^([(\w+)\ ]+) \(contains ([(\w+), ]+)\)$/.exec(line);
+  const match = /^([(\w+) ]+) \(contains ([(\w+), ]+)\)$/.exec(line);
   const foodIngredients = match[1].split(' ');
   const foodAllergens = match[2] ? match[2].split(', ') : [];
 
   // Populate an array of foods, storing for each food its list of ingredients
   foods.push({ ingredients: foodIngredients });
 
-  // Maintain a set of unique ingredients
+  // Populate a set of unique ingredients
   ingredients = new Set([...ingredients, ...foodIngredients]);
 
   // Populate a map containing for each allergen a list of possible ingredients
