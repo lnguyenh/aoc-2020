@@ -11,7 +11,7 @@ const foodLines = getInput(INPUT_FILE);
 const foods = [];
 let ingredients = new Set();
 const allergens = new Map();
-const ingredientPart2 = new Map();
+const ingredientsPart2 = new Map();
 
 for (const line of foodLines) {
   const match = /^([(\w+) ]+) \(contains ([(\w+), ]+)\)$/.exec(line);
@@ -40,14 +40,14 @@ for (const line of foodLines) {
   // Populate a map containing for each ingredient a list of possible allergens
   // it can contain
   for (const ingredient of foodIngredients) {
-    if (ingredientPart2.has(ingredient)) {
+    if (ingredientsPart2.has(ingredient)) {
       const allergenSet = new Set([
-        ...ingredientPart2.get(ingredient),
+        ...ingredientsPart2.get(ingredient),
         ...foodAllergens,
       ]);
-      ingredientPart2.set(ingredient, allergenSet);
+      ingredientsPart2.set(ingredient, allergenSet);
     } else {
-      ingredientPart2.set(ingredient, new Set(foodAllergens));
+      ingredientsPart2.set(ingredient, new Set(foodAllergens));
     }
   }
 }
