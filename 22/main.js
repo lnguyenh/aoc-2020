@@ -38,10 +38,6 @@ class Deck {
   size() {
     return this.current.length;
   }
-
-  copy() {
-    return new Deck(this.current.slice());
-  }
 }
 
 class BaseGame {
@@ -79,10 +75,11 @@ class Game1 extends BaseGame {
 }
 
 class Game2 extends BaseGame {
-  constructor(deck1, deck2) {
+  constructor(deck1, deck2, depth) {
     super(deck1, deck2);
     this.states = [];
     this.winner = -1;
+    this.depth = depth;
   }
 
   getState() {
@@ -95,23 +92,35 @@ class Game2 extends BaseGame {
     this.states.push(this.getState());
   }
 
+  log(text) {
+    // Helper to debug
+    const spaces = [];
+    for (let i = 0; i < this.depth; i++) {
+      spaces.push('   ');
+    }
+    console.log(spaces.join(''), text.join(''));
+  }
+
   playTurn() {
     // if state was seen before stop
-    if (this.states.includes(this.getState)) {
+    if (this.states.includes(this.getState())) {
       this.winner = 1;
       return;
     }
-
     this.saveState();
-
     let roundWinner = -1;
+
     // draw cards
     const [card1, card2] = [this.deck1.popFirst(), this.deck2.popFirst()];
 
     // check if we need to play a recursive subGame
-    if (card1 >= this.deck1.size() && card2 >= this.deck2.size()) {
+    if (card1 <= this.deck1.size() && card2 <= this.deck2.size()) {
       // Play a new Game with remaining cards
-      const subGame = new Game2(this.deck1.copy(), this.deck2.copy());
+      const subGame = new Game2(
+        new Deck(this.deck1.current.slice(0, card1)),
+        new Deck(this.deck2.current.slice(0, card2)),
+        this.depth + 1
+      );
       roundWinner = subGame.playFullGame();
     } else {
       if (card1 > card2) roundWinner = 1;
@@ -145,12 +154,13 @@ const getInput = (fileName) => {
   return decksAsText.map((text) => new Deck(text));
 };
 
-const INPUT_FILE = 'example.csv';
+const INPUT_FILE = 'data.csv';
 const [deck1, deck2] = getInput(INPUT_FILE);
-// const game1 = new Game1(deck1, deck2);
-// game1.playFullGame();
-// console.log('part 1: ' + game1.getScore());
+const [deck1p2, deck2p2] = getInput(INPUT_FILE);
+const game1 = new Game1(deck1, deck2);
+game1.playFullGame();
+console.log('part 1: ' + game1.getScore());
 
-const game2 = new Game2(deck1, deck2);
+const game2 = new Game2(deck1p2, deck2p2, 0);
 game2.playFullGame();
-console.log('part 2: ' + '');
+console.log('part 2: ' + game2.getScore());
