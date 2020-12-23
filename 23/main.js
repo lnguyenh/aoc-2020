@@ -4,9 +4,6 @@ class Cup {
   constructor(value) {
     this.value = value;
     this.next = null;
-
-    this.firstExtracted = null;
-    this.lastExtracted = null;
   }
 }
 
@@ -19,18 +16,15 @@ class Game {
       const cup = cupsArray[i];
       cup.next = cupsArray[(i + 1) % numCups];
     }
-    this.current = cupsArray[0];
-    this.firstImported = cupsArray[0];
-    this.lastImported = cupsArray[array.length - 1];
 
+    this.current = cupsArray[0];
+    this.lastImported = cupsArray[array.length - 1];
     this.cups = new Map();
     for (const cup of cupsArray) {
       this.cups.set(cup.value, cup);
     }
-
     this.numCups = numCups;
-
-    this.print();
+    this.firstExtracted = this.middleExtracted = this.lastExtracted = null;
   }
 
   addUpTo(numCups) {
@@ -58,7 +52,7 @@ class Game {
     const oldDestinationNext = this.destination.next;
     this.destination.next = this.firstExtracted;
     this.lastExtracted.next = oldDestinationNext;
-    this.firstExtracted = this.lastExtracted = null;
+    this.firstExtracted = this.middleExtracted = this.lastExtracted = null;
   }
 
   isExtracted(value) {
@@ -95,7 +89,6 @@ class Game {
     this.updateDestination();
     this.insert();
     this.moveCurrent();
-    this.print();
   }
 
   playTurns(numTurns) {
@@ -105,6 +98,7 @@ class Game {
   }
 
   print() {
+    // Useful for debugging
     const values = [];
     let cup = this.current;
     while (true) {
@@ -136,12 +130,8 @@ class Game {
   }
 
   getPart2Number() {
-    let cup = this.current;
-    while (cup.value !== 1) {
-      cup = cup.next;
-    }
+    const cup = this.cups.get(1);
     const part2Number = cup.next.value * cup.next.next.value;
-    console.log(part2Number);
     return part2Number;
   }
 }
@@ -151,14 +141,12 @@ const createGame = (fileName) => {
   return new Game(fileContent.split(''));
 };
 
-const INPUT_FILE = 'example.csv';
+const INPUT_FILE = 'data.csv';
 const game = createGame(INPUT_FILE);
-game.playTurns(10);
+game.playTurns(100);
 console.log('part 1: ' + game.getPart1Number());
 
 const game2 = createGame(INPUT_FILE);
 game2.addUpTo(1000000);
-// game2.playTurns(10000000);
-// game2.playTurns(10);
+game2.playTurns(10000000);
 console.log('part 2: ' + game2.getPart2Number());
-console.log('done');
