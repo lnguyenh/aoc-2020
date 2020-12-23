@@ -111,20 +111,10 @@ class Game {
 
   getPart1Answer() {
     const values = [];
-    let foundTheOne = false;
-    let cup = this.current;
-    while (true) {
+    let cup = this.cups.get(1).next;
+    while (cup.value !== 1) {
+      values.push(cup.value);
       cup = cup.next;
-      if (cup.value !== 1 && !foundTheOne) {
-        continue;
-      } else if (cup.value === 1 && !foundTheOne) {
-        foundTheOne = true;
-        continue;
-      } else if (cup.value === 1 && foundTheOne) {
-        break;
-      } else {
-        values.push(cup.value);
-      }
     }
     return values.join('');
   }
