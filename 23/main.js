@@ -109,7 +109,7 @@ class Game {
     console.log(values.join());
   }
 
-  getPart1Number() {
+  getPart1Answer() {
     const values = [];
     let foundTheOne = false;
     let cup = this.current;
@@ -129,7 +129,7 @@ class Game {
     return values.join('');
   }
 
-  getPart2Number() {
+  getPart2Answer() {
     const cup = this.cups.get(1);
     const part2Number = cup.next.value * cup.next.next.value;
     return part2Number;
@@ -144,9 +144,9 @@ const createGame = (fileName) => {
 const INPUT_FILE = 'data.csv';
 const game = createGame(INPUT_FILE);
 game.playTurns(100);
-console.log('part 1: ' + game.getPart1Number());
+console.log('part 1: ' + game.getPart1Answer());
 
 const game2 = createGame(INPUT_FILE);
 game2.addUpTo(1000000);
 game2.playTurns(10000000);
-console.log('part 2: ' + game2.getPart2Number());
+console.log('part 2: ' + game2.getPart2Answer());
