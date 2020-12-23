@@ -49,7 +49,8 @@ class Game {
 
   extract() {
     this.firstExtracted = this.current.next;
-    this.lastExtracted = this.firstExtracted.next.next;
+    this.middleExtracted = this.firstExtracted.next;
+    this.lastExtracted = this.middleExtracted.next;
     this.current.next = this.lastExtracted.next;
   }
 
@@ -60,24 +61,28 @@ class Game {
     this.firstExtracted = this.lastExtracted = null;
   }
 
+  isExtracted(value) {
+    return (
+      value === this.firstExtracted.value ||
+      value === this.middleExtracted.value ||
+      value === this.lastExtracted.value
+    );
+  }
+
   updateDestination() {
     const getNextTarget = (val) => {
-      let target = val - 1;
-      if (target < 1) {
-        target = this.numCups;
+      let target = val;
+      while (true) {
+        target = target - 1;
+        if (target < 1) target = this.numCups;
+        if (this.isExtracted(target)) continue;
+        break;
       }
       return target;
     };
 
-    let cup = this.current.next;
     let target = getNextTarget(this.current.value);
-    while (cup.value !== target) {
-      cup = cup.next;
-      if (cup === this.current) {
-        target = getNextTarget(target);
-      }
-    }
-    this.destination = cup;
+    this.destination = this.cups.get(target);
   }
 
   moveCurrent() {
