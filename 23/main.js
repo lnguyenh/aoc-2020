@@ -132,6 +132,7 @@ const createGame = (fileName) => {
 };
 
 const INPUT_FILE = 'data.csv';
+
 const game = createGame(INPUT_FILE);
 game.playTurns(100);
 console.log('part 1: ' + game.getPart1Answer());
