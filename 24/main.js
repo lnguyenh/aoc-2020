@@ -95,7 +95,7 @@ class Grid {
     }
   }
 
-  populateNextDays() {
+  populateNextDay() {
     for (let i = 2; i < SIZE - 2; i++) {
       for (let j = 2; j < SIZE - 2; j++) {
         this.nextDayTiles[i][j] = this.tiles[i][j];
@@ -114,7 +114,7 @@ class Grid {
   }
 
   applyNextDay() {
-    this.populateNextDays();
+    this.populateNextDay();
     this.commitNextDay();
   }
 
