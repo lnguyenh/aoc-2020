@@ -113,9 +113,7 @@ class Grid {
         }
       }
     }
-
     this.commitNextDay();
-    // console.log(this.countBlacks());
   }
 
   applyDays(numDays) {
