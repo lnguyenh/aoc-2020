@@ -2,6 +2,14 @@ const fs = require('fs');
 
 const SIZE = 201;
 const MIDDLE_INDEX = 100;
+const NEIGHBORS = [
+  [-1, 0],
+  [-1, 1],
+  [0, -1],
+  [0, 1],
+  [1, -1],
+  [1, 0],
+];
 
 class Grid {
   constructor() {
@@ -17,7 +25,7 @@ class Grid {
     return grid;
   }
 
-  flip(instruction) {
+  flipOne(instruction) {
     let i, j;
     i = j = MIDDLE_INDEX;
 
@@ -69,21 +77,13 @@ class Grid {
 
   applyAll(instructions) {
     for (const instruction of instructions) {
-      this.flip(instruction);
+      this.flipOne(instruction);
     }
   }
 
   getNumBlackNeighbors(i, j) {
-    const neighbors = [
-      [-1, 0],
-      [-1, 1],
-      [0, -1],
-      [0, 1],
-      [1, -1],
-      [1, 0],
-    ];
     let numBlackNeighbors = 0;
-    for (const [k, l] of neighbors) {
+    for (const [k, l] of NEIGHBORS) {
       if (this.tiles[i + k][j + l] === 'b') numBlackNeighbors++;
     }
     return numBlackNeighbors;
@@ -97,7 +97,7 @@ class Grid {
     }
   }
 
-  applyNextDay() {
+  populateNextDays() {
     for (let i = 2; i < SIZE - 2; i++) {
       for (let j = 2; j < SIZE - 2; j++) {
         this.nextDayTiles[i][j] = this.tiles[i][j];
@@ -113,6 +113,10 @@ class Grid {
         }
       }
     }
+  }
+
+  applyNextDay() {
+    this.populateNextDays();
     this.commitNextDay();
   }
 
