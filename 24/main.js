@@ -51,8 +51,6 @@ class Grid {
           i++;
           j--;
           break;
-        default:
-          throw Error;
       }
     }
 
@@ -120,7 +118,7 @@ class Grid {
     this.commitNextDay();
   }
 
-  applyDays(numDays) {
+  applyNextDays(numDays) {
     for (let i = 0; i < numDays; i++) {
       this.applyNextDay();
     }
@@ -145,5 +143,5 @@ const grid = new Grid();
 grid.applyAll(instructions);
 console.log('part 1: ' + grid.countBlacks());
 
-grid.applyDays(100);
+grid.applyNextDays(100);
 console.log('part 2: ' + grid.countBlacks());
