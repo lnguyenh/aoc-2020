@@ -5,10 +5,16 @@ const MIDDLE_INDEX = 100;
 
 class Grid {
   constructor() {
-    this.tiles = [];
+    this.tiles = this.getFreshGrid();
+    this.nextDayTiles = this.getFreshGrid();
+  }
+
+  getFreshGrid() {
+    const grid = [];
     for (let i = 0; i < SIZE; i++) {
-      this.tiles.push(Array(SIZE).fill('w'));
+      grid.push(Array(SIZE).fill('w'));
     }
+    return grid;
   }
 
   flip(instruction) {
@@ -64,7 +70,57 @@ class Grid {
   applyAll(instructions) {
     for (const instruction of instructions) {
       this.flip(instruction);
-      // console.log(this.countBlacks());
+    }
+  }
+
+  getNumBlackNeighbors(i, j) {
+    const neighbors = [
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+    ];
+    let numBlackNeighbors = 0;
+    for (const [k, l] of neighbors) {
+      if (this.tiles[i + k][j + l] === 'b') numBlackNeighbors++;
+    }
+    return numBlackNeighbors;
+  }
+
+  commitNextDay() {
+    for (let i = 0; i < SIZE; i++) {
+      for (let j = 0; j < SIZE; j++) {
+        this.tiles[i][j] = this.nextDayTiles[i][j];
+      }
+    }
+  }
+
+  applyNextDay() {
+    for (let i = 2; i < SIZE - 2; i++) {
+      for (let j = 2; j < SIZE - 2; j++) {
+        this.nextDayTiles[i][j] = this.tiles[i][j];
+        const blackNeighbors = this.getNumBlackNeighbors(i, j);
+        switch (this.tiles[i][j]) {
+          case 'w':
+            if (blackNeighbors === 2) this.nextDayTiles[i][j] = 'b';
+            break;
+          case 'b':
+            if (blackNeighbors === 0 || blackNeighbors > 2)
+              this.nextDayTiles[i][j] = 'w';
+            break;
+        }
+      }
+    }
+
+    this.commitNextDay();
+    // console.log(this.countBlacks());
+  }
+
+  applyDays(numDays) {
+    for (let i = 0; i < numDays; i++) {
+      this.applyNextDay();
     }
   }
 }
@@ -87,4 +143,5 @@ const grid = new Grid();
 grid.applyAll(instructions);
 console.log('part 1: ' + grid.countBlacks());
 
-console.log('part 2: ' + '');
+grid.applyDays(100);
+console.log('part 2: ' + grid.countBlacks());
