@@ -9,8 +9,8 @@ https://crypto.stanford.edu/pbc/notes/numbertheory/crt.html
 Check the part "For Several Equations"
 
 2) Extended euclidian theorem theory:
-(at the bottom of:)
 http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exeucalg.html
+Check the bottom part of the article
 */
 
 const fs = require('fs');
@@ -27,7 +27,7 @@ const getInput = (fileName) => {
 };
 
 function inverseOfAModuloB(a, b) {
-  // in our case we want the inverse of bi modulo mi
+  // in our case we will want the inverse of bi modulo mi
   // http://www-math.ucdenver.edu/~wcherowi/courses/m5410/exeucalg.html
   let q0, q1, r0, r1, qi, ri, rim1, pi, pim1, pim2, qim1, qim2, Ai, Bi;
   let p0 = 0;
