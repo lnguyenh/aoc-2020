@@ -82,15 +82,20 @@ const buses = getInput(INPUT_FILE);
 const M = buses.map((b) => b.id).reduce((a, b) => a * b);
 const aiBiBiPrimes = buses.map((b) => {
   const mi = b.id;
-  const ai = mi - b.index; // interesting: it also works if you add mi, 2mi, 3mi etc...
+  const ai = b.index; // interesting: it also works if you add mi, 2mi, 3mi etc...
   const bi = M / mi;
   const biPrime = inverseOfAModuloB(bi, mi);
 
   return BigInt(ai) * BigInt(bi) * BigInt(biPrime);
 });
 
-const aWorkingDepartureTime = aiBiBiPrimes.reduce((a, b) => a + b);
-// console.log(aWorkingDepartureTime % BigInt(M));
-// console.log(BigInt(M));
-const earliestDepartureTime = aWorkingDepartureTime % BigInt(M);
-console.log('part 2: ' + earliestDepartureTime);
+const bigM = BigInt(M);
+const sum = aiBiBiPrimes.reduce((a, b) => a + b);
+// T = sum (modulo M)
+// can be simplified to T = simplifiedSum (modulo M)
+const simplifiedSum = sum % bigM;
+
+// So earliest T is... (I am actually confused why we need to do this and not just take simplifiedSum)
+const earliestTime = bigM - simplifiedSum;
+
+console.log('part 2: ' + earliestTime);
