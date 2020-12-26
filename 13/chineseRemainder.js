@@ -82,7 +82,7 @@ const buses = getInput(INPUT_FILE);
 const M = buses.map((b) => b.id).reduce((a, b) => a * b);
 const aiBiBiPrimes = buses.map((b) => {
   const mi = b.id;
-  const ai = b.index; // interesting: it also works if you add mi, 2mi, 3mi etc...
+  const ai = mi - b.index; // interesting: it also works if you add mi, 2mi, 3mi etc...
   const bi = M / mi;
   const biPrime = inverseOfAModuloB(bi, mi);
 
@@ -90,5 +90,7 @@ const aiBiBiPrimes = buses.map((b) => {
 });
 
 const aWorkingDepartureTime = aiBiBiPrimes.reduce((a, b) => a + b);
-const earliestDepartureTime = BigInt(M) - (aWorkingDepartureTime % BigInt(M));
+// console.log(aWorkingDepartureTime % BigInt(M));
+// console.log(BigInt(M));
+const earliestDepartureTime = aWorkingDepartureTime % BigInt(M);
 console.log('part 2: ' + earliestDepartureTime);
