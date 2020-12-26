@@ -81,8 +81,8 @@ const buses = getInput(INPUT_FILE);
 
 const M = buses.map((b) => b.id).reduce((a, b) => a * b);
 const aiBiBiPrimes = buses.map((b) => {
-  const ai = b.index;
   const mi = b.id;
+  const ai = b.index; // interesting: it also works if you add mi, 2mi, 3mi etc...
   const bi = M / mi;
   const biPrime = inverseOfAModuloB(bi, mi);
 
