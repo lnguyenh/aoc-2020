@@ -90,11 +90,11 @@ const aiBiBiPrimes = buses.map((b) => {
   const bi = M / mi;
   const biPrime = inverseOfAModuloB(bi, mi);
 
-  return ai * bi * biPrime;
+  return BigInt(ai) * BigInt(bi) * BigInt(biPrime);
 });
 
 const aWorkingDepartureTime = aiBiBiPrimes.reduce((a, b) => a + b);
-const earliestDepartureTime = M - (aWorkingDepartureTime % M);
+const earliestDepartureTime = BigInt(M) - (aWorkingDepartureTime % BigInt(M));
 console.log('part 2: ' + earliestDepartureTime);
 
 function inverseOfAModuloB(a, b) {
